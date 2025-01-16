@@ -20,6 +20,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: frontend2
           environment_name: Frontend2-env
-          version_label: 10002
+          version_label: 10004
           region: eu-central-1
           deployment_package: deploy.zip
