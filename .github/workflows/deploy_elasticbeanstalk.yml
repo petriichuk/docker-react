@@ -10,9 +10,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-      - name: Generate deployment package
-        run: zip -r deploy.zip . -x '*.git*'
-
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
         with:
@@ -22,4 +19,3 @@ jobs:
           environment_name: Frontend2-env
           version_label: 10004
           region: eu-central-1
-          deployment_package: deploy.zip
