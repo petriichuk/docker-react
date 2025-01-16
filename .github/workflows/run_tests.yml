@@ -1,6 +1,9 @@
 name: Run React Tests
 # redeploy
 on: [push]
+branches:
+  only:
+    - main1
 
 jobs:
   build:
