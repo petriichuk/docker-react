@@ -1,5 +1,5 @@
 name: Deploy
-# redeploy@
+# redeploy@!
 on: [push]
 
 jobs:
@@ -19,3 +19,4 @@ jobs:
           environment_name: Frontendappp-env
           version_label: 10000
           region: eu-central-1
+
