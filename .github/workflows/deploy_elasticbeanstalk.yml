@@ -2,21 +2,57 @@ name: Deploy
 # redeploy@!
 on: [push]
 
+env:
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  EB_APPLICATION_NAME: "frontendappp"
+  EB_ENVIRONMENT_NAME: "Frontendappp-env"
+  S3_BUCKET_NAME: "elasticbeanstalk-eu-central-1-434557646045"
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v22
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-          application_name: frontendappp
-          environment_name: Frontendappp-env
-          version_label: 10000
-          region: eu-central-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: "eu-central-1"
+      - name: Install AWS Elastic Beanstalk CLI
+        run: |
+          pip install awsebcli --upgrade
+
+      - name: Generate deployment package
+        run: |
+          zip -r deploy.zip . -x "*.git*"
+      - name: Upload to S3
+        run: |
+         aws s3 cp deploy.zip s3://elasticbeanstalk-eu-central-1-434557646045/deploy-${{ github.sha }}.zip
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --version-label "deploy-${{ github.sha }}" \
+            --source-bundle S3Bucket="${{ env.S3_BUCKET_NAME }}",S3Key="deploy-${{ github.sha }}.zip"
+  
+          aws elasticbeanstalk update-environment \
+            --environment-name ${{ env.EB_ENVIRONMENT_NAME }} \
+            --version-label "deploy-${{ github.sha }}"
+
+#      - name: Checkout source code
+#        uses: actions/checkout@v4
+#
+#      - name: Deploy to EB
+#        uses: einaregilsson/beanstalk-deploy@v22
+#        with:
+#          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+#          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+#          application_name: frontendappp
+#          environment_name: Frontendappp-env
+#          version_label: 10000
+#          region: eu-central-1
 
