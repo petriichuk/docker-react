@@ -33,7 +33,7 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy.zip .ebextensions/ Dockerfile package.json
+          zip -r deploy.zip . -x '*.git*'
           ls
 
       - name: Upload package to S3
