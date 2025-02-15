@@ -33,7 +33,8 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy.zip Dockerrun.aws.json .ebextensions/ Dockerfile
+          zip -r deploy.zip .ebextensions/ Dockerfile package.json
+          ls
 
       - name: Upload package to S3
         run: |
