@@ -9,6 +9,9 @@ function App() {
         <p>
          Hi there everyone! I'm a React app running on a Kubernetes cluster.
         </p>
+        <p>
+         updated
+        </p>
         <a
           className="App-link"
           href="https://reactjs.org"
